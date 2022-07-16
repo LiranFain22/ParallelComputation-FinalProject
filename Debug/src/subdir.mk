@@ -4,13 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/Stam.c 
+../src/cFunctions.c \
+../src/main.c 
 
 OBJS += \
-./src/Stam.o 
+./src/cFunctions.o \
+./src/main.o 
 
 C_DEPS += \
-./src/Stam.d 
+./src/cFunctions.d \
+./src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
