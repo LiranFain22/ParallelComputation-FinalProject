@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Jul 16 18:13:09 2022
+# Make data base, printed on Sun Jul 17 10:15:55 2022
 
 # Variables
 
@@ -37,7 +37,7 @@ XDG_SESSION_TYPE = x11
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
-XAUTHORITY = /var/run/gdm3/auth-for-linuxu-ALGDP1/database
+XAUTHORITY = /var/run/gdm3/auth-for-linuxu-D32MP1/database
 # environment
 GDMSESSION = ubuntu
 # environment
@@ -53,7 +53,7 @@ VTE_VERSION = 6003
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:1653466
+JOURNAL_STREAM = 8:1557264
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -73,7 +73,7 @@ XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share:/usr/share:/var/lib/snapd/des
 # environment
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
-MANAGERPID = 163875
+MANAGERPID = 149912
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -87,7 +87,7 @@ PATH = /usr/local/cuda-11.0/bin:/home/linuxu/anaconda3/bin:/home/linuxu/anaconda
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/ParallelCv4-9:@/tmp/.ICE-unix/164095,unix/ParallelCv4-9:/tmp/.ICE-unix/164095
+SESSION_MANAGER = local/ParallelCv4-10:@/tmp/.ICE-unix/150128,unix/ParallelCv4-10:/tmp/.ICE-unix/150128
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -105,7 +105,7 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = 251455d5c68b4c38a608825858725f9b
+INVOCATION_ID = d46fcb1c6599415b99c27117632d3ea3
 # environment
 GDK_PIXBUF_MODULEDIR = /snap/code/101/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
@@ -119,7 +119,7 @@ SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # automatic
 %F = $(notdir $%)
 # environment
-DISPLAY = :101
+DISPLAY = :100
 # environment
 CONDA_EXE = /home/linuxu/anaconda3/bin/conda
 # environment
@@ -129,7 +129,7 @@ PWD = /home/linuxu/ParallelComputationFinalProject
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 164064
+SSH_AGENT_PID = 150098
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -149,7 +149,7 @@ VSCODE_CODE_CACHE_PATH = /home/linuxu/.config/Code/CachedData/b06ae3b2d2dbfe28bc
 # environment
 LOGNAME = linuxu
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # environment
@@ -181,6 +181,7 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
 # environment
+ 
 SNAP_USER_DATA = /home/linuxu/snap/code/101
 # environment
 SHLVL = 1
@@ -224,7 +225,6 @@ MFLAGS = -pqrR
 *D = $(patsubst %/,%,$(dir $*))
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
- 
 # environment
 GDK_BACKEND = x11
 # automatic
@@ -246,11 +246,11 @@ CONDA_PYTHON_EXE = /home/linuxu/anaconda3/bin/python
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/851be736_1809_454a_9820_d42bd2e002c7
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/7f58b29a_8d6e_47f6_b64f_6db78761677e
 # automatic
 ^F = $(notdir $^)
 # environment
-GNOME_TERMINAL_SERVICE = :1.121
+GNOME_TERMINAL_SERVICE = :1.106
 # default
 SUFFIXES := 
 # environment
@@ -270,7 +270,7 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 167471
+VSCODE_PID = 153433
 # environment
 _CE_CONDA = 
 # variable set hash-table stats:
@@ -282,7 +282,7 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 2053, inode 2106076): 10 files, no impossibilities.
+# . (device 2053, inode 2106071): 10 files, no impossibilities.
 
 # 10 files, no impossibilities in 1 directories.
 
@@ -292,7 +292,6 @@ _CE_CONDA =
 
 # Files
 
- 
 # Not a target:
 all:
 #  Command line target.
@@ -320,7 +319,6 @@ makefile:
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 # Not a target:
 GNUmakefile:
 #  Implicit rule search has been done.
@@ -342,6 +340,6 @@ GNUmakefile:
 # strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=1/21=5%
-# Finished Make data base on Sat Jul 16 18:13:09 2022
+# Finished Make data base on Sun Jul 17 10:15:55 2022
 
  
