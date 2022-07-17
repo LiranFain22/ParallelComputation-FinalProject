@@ -47,18 +47,16 @@ void parseFileOrigin(char* path, int* matchingValue, int* numOfPics, Picture** p
 	// Inserting numbers to each picture
 	for(int i = 0; i < *(numOfPics); i++)
 	{
-		int indexPic;
-		fscanf(fp, "%d", &indexPic);
-		pictures[i]->picId = indexPic - 1; // base 1 NOT base 0
+		fscanf(fp, "%d", &(*pictures)[i].picId);
 		// TODO delete printf
-		printf("Picture index: %d\n", pictures[i]->picId);
+		printf("Picture index: %d\n", (*pictures)[i].picId);
 		// Reads from file each picture size
-		fscanf(fp, "%d", &pictures[i]->picSize);
+		fscanf(fp, "%d", &(*pictures)[i].picSize);
 		// TODO delete printf
-		printf("Picture size: %d\n\n", pictures[i]->picSize);
+		printf("Picture size: %d\n\n", (*pictures)[i].picSize);
 
-		(*pictures)[i].picArr = (int*)malloc(sizeof(int)*pictures[i]->picSize*pictures[i]->picSize);
-		for(int j = 0; j < pictures[i]->picSize * pictures[i]->picSize; j++)
+		(*pictures)[i].picArr = (int*)malloc(sizeof(int)*(*pictures)[i].picSize*(*pictures)[i].picSize);
+		for(int j = 0; j < (*pictures)[i].picSize * (*pictures)[i].picSize; j++)
 		{
 			fscanf(fp, "%d", &(*pictures)[i].picArr[j]);
 			// TODO delete printf
@@ -87,19 +85,17 @@ void parseFileOrigin(char* path, int* matchingValue, int* numOfPics, Picture** p
 	// Inserting numbers to each object
 	for(int  i = 0; i < *(numOfObjs); i++)
 	{
-		int indexObj;
-		fscanf(fp, "%d", &indexObj);
-		objects[i]->objId = indexObj - 1; // base 1 NOT base 0
+		fscanf(fp, "%d", &(*objects)[i].objId);
 		// TODO delete printf
-		printf("Object index: %d\n", objects[i]->objId);
+		printf("Object index: %d\n", (*objects)[i].objId);
 
 		// Read from file each object size
-		fscanf(fp, "%d", &objects[i]->objSize);
+		fscanf(fp, "%d", &(*objects)[i].objSize);
 		// TODO delete printf
-		printf("Object size: %d\n\n", objects[i]->objSize);
+		printf("Object size: %d\n\n", (*objects)[i].objSize);
 
-		(*objects)[i].objArr = (int*)malloc(sizeof(int)*objects[i]->objSize*objects[i]->objSize);
-		for(int j = 0; j < objects[i]->objSize * objects[i]->objSize; j++)
+		(*objects)[i].objArr = (int*)malloc(sizeof(int)*(*objects)[i].objSize*(*objects)[i].objSize);
+		for(int j = 0; j < (*objects)[i].objSize * (*objects)[i].objSize; j++)
 		{
 			fscanf(fp, "%d", &(*objects)[i].objArr[j]);
 			// TODO delete printf
@@ -216,34 +212,68 @@ void parseFileOrigin(char* path, int* matchingValue, int* numOfPics, Picture** p
 
 void runMasterOrigin(int p, char* path, Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs)
 {
-	parseFileOrigin(path, matching, numOfPics, pictures, numOfObjs, objects);
+	Picture* allPictures;
+	int numOfAllPictures;
 
-	// TODO delete printf
-	printf("YAY!\n");
+	parseFileOrigin(path, matching, &numOfAllPictures, &allPictures, numOfObjs, objects);
 
-	if (p > (*numOfPics))
+	if (p > numOfAllPictures)
 	{
-		p = (*numOfPics);
+		p = numOfAllPictures;
 	}
 
-	int portionSize = (*numOfPics) / p;
+	int portionSize = numOfAllPictures / p;
+	*numOfPics = portionSize;
 
 	for(int i = 0; i < p; i++)
 	{
 		if (i == 0)
 		{
+			*pictures = (Picture*)malloc(sizeof(Picture)*portionSize);
+			if(!*pictures)
+			{
+				printf("Failed to create pictures..\n");
+				exit(1);
+			}
 			for(int j = 0; j < portionSize; j++)
 			{
-				// TODO: implement matser's part - pictures
+				(*pictures)[j].picId = allPictures[j].picId;
+				(*pictures)[j].picSize = allPictures[j].picSize;
+				(*pictures)[j].picArr = (int*)malloc(sizeof(int)*(*pictures)[j].picSize);
+				for(int k = 0; k < (*pictures)[j].picSize * (*pictures)[j].picSize; j++)
+				{
+					(*pictures)[j].picArr[k] = allPictures[j].picArr[k];
+				}
 			}
 		} else
 		{
 			MPI_Send(matching, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
 			MPI_Send(numOfObjs, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-			MPI_Send(objects, 1, sizeof(Obj), i, 0, MPI_COMM_WORLD);
+			for(int j = 0; j < (*numOfObjs); j++)
+			{
+				MPI_Send(&(*objects)[j].objId, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				MPI_Send(&(*objects)[j].objSize, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				for(int k = 0; k < (*objects)[j].objSize * (*objects)[j].objSize; k++)
+				{
+					MPI_Send(&(*objects)[j].objArr[k], 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				}
+			}
 			MPI_Send(&portionSize, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-			// TODO: implement slave's part - pictures
-			// TODO: implement slave's part - objects
+			// TODO delete print
+			printf("from master portionSize = %d\n", portionSize);
+			for(int j = portionSize * i; j < portionSize * (i + 1) ; j++)
+			{
+				MPI_Send(&(allPictures)[j].picId, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				// TODO delete print
+				printf("from master picture id = %d\n", (allPictures)[j].picId);
+				printf("from master j = %d\n", j);
+
+				MPI_Send(&(allPictures)[j].picSize, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				for(int k = 0; k < (allPictures)[j].picSize * (allPictures)[j].picSize; k++)
+				{
+					MPI_Send(&(allPictures)[j].picArr[k], 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				}
+			}
 		}
 	}
 }
@@ -306,15 +336,69 @@ void runMasterOrigin(int p, char* path, Picture** pictures, Obj** objects, int* 
 
 void runSlaveOrigin(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs)
 {
-	MPI_Recv(&matching, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	// TODO delete print
+	printf("\n\nIn Slave function:\n\n");
 
-	MPI_Recv(&numOfObjs, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv(matching, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	// TODO delete print
+	printf("from slave matching = %d\n", *matching);
+
+	MPI_Recv(numOfObjs, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	// TODO delete print
+	printf("from slave numOfObjs = %d\n", *numOfObjs);
+
 	*(objects) = (Obj*)malloc(sizeof(Obj)*(*numOfObjs));
 	if(!*(objects))
 	{
 		printf("Failed to malloc objects..\n");
 		exit(1);
 	}
+	for(int i = 0; i < (*numOfObjs); i++)
+	{
+		MPI_Recv(&(*objects)[i].objId, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		// TODO delete print
+		printf("from slave object Id: %d\n", (*objects)[i].objId);
+
+		MPI_Recv(&(*objects)[i].objSize, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		// TODO delete print
+		printf("from slave object size: %d\n", (*objects)[i].objSize);
+
+		(*objects)[i].objArr = (int*)malloc(sizeof(int)*(*objects)[i].objSize*(*objects)[i].objSize);
+		for(int j = 0; j < (*objects)[i].objSize * (*objects)[i].objSize; j++)
+		{
+			MPI_Recv(&(*objects)[i].objArr[j], 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			// TODO delete print
+			printf("from slave object[%d][%d] = %d\n", i, j, (*objects)[i].objArr[j]);
+		}
+	}
+
+	// TODO delete print
+	printf("\n\n");
+
+	MPI_Recv(numOfPics, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	// TODO delete print
+	printf("from slave numOfPics = %d\n", (*numOfPics));
+
+	*(pictures) = (Picture*)malloc(sizeof(Picture)*(*numOfPics));
+	for(int i = 0; i < (*numOfPics); i++)
+	{
+		MPI_Recv(&(*pictures)[i].picId, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		// TODO delete print
+		printf("from slave picture id: %d\n", (*pictures)[i].picId);
+
+		MPI_Recv(&(*pictures)[i].picSize, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		// TODO delete print
+		printf("from slave picture size: %d\n", (*pictures)[i].picSize);
+
+		(*pictures)[i].picArr = (int*)malloc(sizeof(int)*(*pictures)[i].picSize*(*pictures)[i].picSize);
+		for(int j = 0; j < (*pictures)[i].picSize*(*pictures)[i].picSize; j++)
+		{
+			MPI_Recv(&(*pictures)[i].picArr[j], 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			printf("from slave picture[%d][%d] = %d\n", i, j, (*pictures)[i].picArr[j]);
+		}
+	}
+
+
 
 
 }
