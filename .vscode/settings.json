@@ -1,3 +1,9 @@
 {
-    "makefile.extensionOutputFolder": "./.vscode"
+    "makefile.extensionOutputFolder": "./.vscode",
+    "files.associations": {
+        "functions.h": "c",
+        "cudafunctions.h": "c",
+        "stdio.h": "c",
+        "string.h": "c"
+    }
 }

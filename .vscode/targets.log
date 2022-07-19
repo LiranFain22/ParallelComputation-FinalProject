@@ -2,13 +2,20 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target 'all'.  Stop.
 
 # GNU Make 4.2.1
+ 
 # Built for x86_64-pc-linux-gnu
+ 
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
+ 
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+ 
 # This is free software: you are free to change and redistribute it.
+ 
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Sun Jul 17 10:15:55 2022
+ 
+# Make data base, printed on Tue Jul 19 19:33:04 2022
 
 # Variables
 
@@ -37,7 +44,7 @@ XDG_SESSION_TYPE = x11
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
-XAUTHORITY = /var/run/gdm3/auth-for-linuxu-D32MP1/database
+XAUTHORITY = /var/run/gdm3/auth-for-linuxu-F27SP1/database
 # environment
 GDMSESSION = ubuntu
 # environment
@@ -47,13 +54,13 @@ CURDIR := /home/linuxu/ParallelComputationFinalProject
 # makefile
 SHELL = /bin/sh
 # environment
-SNAP_DATA = /var/snap/code/101
+SNAP_DATA = /var/snap/code/102
 # environment
 VTE_VERSION = 6003
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:1557264
+JOURNAL_STREAM = 8:2073204
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -73,13 +80,13 @@ XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share:/usr/share:/var/lib/snapd/des
 # environment
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
-MANAGERPID = 149912
+MANAGERPID = 220503
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/linuxu/ParallelComputationFinalProject
 # environment
-GSETTINGS_SCHEMA_DIR = /snap/code/101/usr/share/glib-2.0/schemas
+GSETTINGS_SCHEMA_DIR = /snap/code/102/usr/share/glib-2.0/schemas
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
@@ -87,15 +94,15 @@ PATH = /usr/local/cuda-11.0/bin:/home/linuxu/anaconda3/bin:/home/linuxu/anaconda
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/ParallelCv4-10:@/tmp/.ICE-unix/150128,unix/ParallelCv4-10:/tmp/.ICE-unix/150128
+SESSION_MANAGER = local/ParallelCv4-11:@/tmp/.ICE-unix/220726,unix/ParallelCv4-11:/tmp/.ICE-unix/220726
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/linuxu/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-SNAP = /snap/code/101
+SNAP = /snap/code/102
 # environment
-SNAP_VERSION = b06ae3b2
+SNAP_VERSION = 3b889b09
 # environment
 CONDA_PREFIX = /home/linuxu/anaconda3
 # environment
@@ -105,9 +112,9 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = d46fcb1c6599415b99c27117632d3ea3
+INVOCATION_ID = e3112dd29c28447696c3f70c3f5e8ece
 # environment
-GDK_PIXBUF_MODULEDIR = /snap/code/101/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+GDK_PIXBUF_MODULEDIR = /snap/code/102/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -129,7 +136,7 @@ PWD = /home/linuxu/ParallelComputationFinalProject
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 150098
+SSH_AGENT_PID = 220690
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -145,7 +152,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 VSCODE_CLI = 1
 # environment
-VSCODE_CODE_CACHE_PATH = /home/linuxu/.config/Code/CachedData/b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a
+VSCODE_CODE_CACHE_PATH = /home/linuxu/.config/Code/CachedData/3b889b090b5ad5793f524b5d1d39fda662b96a2a
 # environment
 LOGNAME = linuxu
 # environment
@@ -181,8 +188,7 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
 # environment
- 
-SNAP_USER_DATA = /home/linuxu/snap/code/101
+SNAP_USER_DATA = /home/linuxu/snap/code/102
 # environment
 SHLVL = 1
 # environment
@@ -194,7 +200,7 @@ MAKE_VERSION := 4.2.1
 # environment
 USER = linuxu
 # environment
-SNAP_REVISION = 101
+SNAP_REVISION = 102
 # makefile
 .DEFAULT_GOAL := 
 # environment
@@ -214,15 +220,19 @@ OLDPWD = /home/linuxu
 # environment
 LANGUAGE = en_IL:en
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-2148651c-1.69.1-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-2148651c-1.69.2-main.sock
 # environment
 SPARK_HOME = /usr/local/spark/spark
 # makefile
 MAKEFLAGS = pqrR
 # environment
+ 
 MFLAGS = -pqrR
+ 
 # automatic
+ 
 *D = $(patsubst %/,%,$(dir $*))
+ 
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -246,11 +256,11 @@ CONDA_PYTHON_EXE = /home/linuxu/anaconda3/bin/python
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/7f58b29a_8d6e_47f6_b64f_6db78761677e
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/b104ecd0_8df2_4e57_99e4_0d47c678e74c
 # automatic
 ^F = $(notdir $^)
 # environment
-GNOME_TERMINAL_SERVICE = :1.106
+GNOME_TERMINAL_SERVICE = :1.123
 # default
 SUFFIXES := 
 # environment
@@ -270,7 +280,7 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 153433
+VSCODE_PID = 224255
 # environment
 _CE_CONDA = 
 # variable set hash-table stats:
@@ -282,9 +292,9 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 2053, inode 2106071): 10 files, no impossibilities.
+# . (device 2053, inode 3152825): 11 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 11 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -334,12 +344,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 18 / storage = 152 B / avg = 8 B
-# current buf: size = 8162 B / used = 152 B / count = 18 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 19 / storage = 172 B / avg = 9 B
+# current buf: size = 8162 B / used = 172 B / count = 19 / avg = 9 B
 
-# strcache performance: lookups = 21 / hit rate = 14%
+# strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
-# Load=18/8192=0%, Rehash=0, Collisions=1/21=5%
-# Finished Make data base on Sun Jul 17 10:15:55 2022
+# Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
+# Finished Make data base on Tue Jul 19 19:33:04 2022
 
  
