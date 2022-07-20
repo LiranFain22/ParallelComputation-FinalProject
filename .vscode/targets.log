@@ -2,20 +2,13 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target 'all'.  Stop.
 
 # GNU Make 4.2.1
- 
 # Built for x86_64-pc-linux-gnu
- 
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
- 
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
- 
 # This is free software: you are free to change and redistribute it.
- 
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
- 
-# Make data base, printed on Tue Jul 19 19:33:04 2022
+# Make data base, printed on Wed Jul 20 10:30:42 2022
 
 # Variables
 
@@ -44,7 +37,7 @@ XDG_SESSION_TYPE = x11
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
-XAUTHORITY = /var/run/gdm3/auth-for-linuxu-F27SP1/database
+XAUTHORITY = /var/run/gdm3/auth-for-linuxu-8DROP1/database
 # environment
 GDMSESSION = ubuntu
 # environment
@@ -60,7 +53,7 @@ VTE_VERSION = 6003
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:2073204
+JOURNAL_STREAM = 8:1546932
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -80,7 +73,7 @@ XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share:/usr/share:/var/lib/snapd/des
 # environment
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
-MANAGERPID = 220503
+MANAGERPID = 148760
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -94,7 +87,7 @@ PATH = /usr/local/cuda-11.0/bin:/home/linuxu/anaconda3/bin:/home/linuxu/anaconda
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/ParallelCv4-11:@/tmp/.ICE-unix/220726,unix/ParallelCv4-11:/tmp/.ICE-unix/220726
+SESSION_MANAGER = local/ParallelCv4-9:@/tmp/.ICE-unix/148985,unix/ParallelCv4-9:/tmp/.ICE-unix/148985
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -112,7 +105,7 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = e3112dd29c28447696c3f70c3f5e8ece
+INVOCATION_ID = 44ab53aaf0a04a30b70e516b970082b1
 # environment
 GDK_PIXBUF_MODULEDIR = /snap/code/102/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
@@ -136,7 +129,7 @@ PWD = /home/linuxu/ParallelComputationFinalProject
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 220690
+SSH_AGENT_PID = 148949
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -156,7 +149,7 @@ VSCODE_CODE_CACHE_PATH = /home/linuxu/.config/Code/CachedData/3b889b090b5ad5793f
 # environment
 LOGNAME = linuxu
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # environment
@@ -226,13 +219,9 @@ SPARK_HOME = /usr/local/spark/spark
 # makefile
 MAKEFLAGS = pqrR
 # environment
- 
 MFLAGS = -pqrR
- 
 # automatic
- 
 *D = $(patsubst %/,%,$(dir $*))
- 
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -256,7 +245,7 @@ CONDA_PYTHON_EXE = /home/linuxu/anaconda3/bin/python
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/b104ecd0_8df2_4e57_99e4_0d47c678e74c
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/682facbe_005d_4ca7_8d62_2c0edc5d0fbb
 # automatic
 ^F = $(notdir $^)
 # environment
@@ -280,7 +269,7 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 224255
+VSCODE_PID = 152343
 # environment
 _CE_CONDA = 
 # variable set hash-table stats:
@@ -292,7 +281,7 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 2053, inode 3152825): 11 files, no impossibilities.
+# . (device 2053, inode 2106016): 11 files, no impossibilities.
 
 # 11 files, no impossibilities in 1 directories.
 
@@ -350,6 +339,6 @@ GNUmakefile:
 # strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
 # Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
-# Finished Make data base on Tue Jul 19 19:33:04 2022
+# Finished Make data base on Wed Jul 20 10:30:42 2022
 
  

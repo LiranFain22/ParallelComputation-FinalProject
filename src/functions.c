@@ -173,7 +173,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, int* matchi
 			}
 		}
 	}
-	freePictures(pictures, numOfPics);
+	freePictures(pictures, *numOfPics);
 }
 
 void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs)
@@ -241,3 +241,18 @@ void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, 
 	}
 }
 
+void searchForMatch(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs, int my_rank)
+{
+	
+	for(int i = 0; i < numOfPics; i++)
+	{
+		#pragma omp parallel
+		{
+			#pragma omp for
+			for(int j = 0; j < numOfObjs; j++)
+			{
+				cudaFuncs((*pictures)[i].picArr, (*objects)[j].objArr, matching);
+			}
+		}
+	}
+}

@@ -1,4 +1,5 @@
 #include "functions.h"
+#include "mpi.h"
 
 int main(int argc, char* argv[]){
 	int  my_rank; /* rank of process */
@@ -27,7 +28,7 @@ int main(int argc, char* argv[]){
 	}
 
 	/* --- search for match --- */
-	findMatch(&pictures, &objects, &matching, &numOfPics, &numOfObjs);
+	searchForMatch(&pictures, &objects, &matching, &numOfPics, &numOfObjs, my_rank);
 
 	/* shut down MPI */
 	MPI_Finalize();

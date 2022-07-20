@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <omp.h>
+// #include "cudaFunctions.h" // TODO: need to find out why it make errors
 
 typedef struct picture
 {
@@ -28,4 +29,4 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, int* matchi
 
 void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs);
 
-void findMatch(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs);
+void searchForMatch(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs, int my_rank);

@@ -1,25 +1,39 @@
 #include "cudaFunctions.h"
 #include <math.h>
 
+__host__ void checkStatus(cudaError_t cudaStatus, const char* errorMsg)
+{
+    if(cudaStatus != cudaSuccess)
+    {
+        printf("%s\n",errorMsg);
+        exit(1);
+    }
+}
+
 __device__ int calcDiff(int p, int o)
 {
     return abs((p - o) / p);
 }
 
-__global__ void findMatch(Picture* picture, Obj* object, int matchingValue, int row, int col, int picSize, int objSize, int* isMatch)
+__global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, int* isMatch)
 {
     int result = 0;
-    if ((row + object->objSize) < picture->picSize &&
-        (col + object->objSize) < picture->picSize)
+    int tx = threadIdx.x;
+    int bx = blockIdx.x;
+    int s = bx * blockDim.x + tx;
+    int row = s / picSize;
+    int col = s - picSize * row;
+    if ((row + objSize) < picSize &&
+        (col + objSize) < picSize)
     {
-            for(int i = 0; i < object->objSize; i++)
+            for(int i = 0; i < objSize; i++)
             {
-                for(int j = 0; j < object->objSize; j++)
+                for(int j = 0; j < objSize; j++)
                 {
-                    int objIdx = (i * object->objSize) + j;
-                    int picIdx = ((row + i) * picture->picSize) + (col + j);
-                    result += calcDiff(picture->picArr[picIdx], object->objArr[objIdx]);
-                    if ( result > matchingValue)
+                    int objIdx = (i * objSize) + j;
+                    int picIdx = ((row + i) * picSize) + (col + j);
+                    result += calcDiff(picture[picIdx], object[objIdx]);
+                    if (result > matchingValue)
                     {
                         *isMatch = 0;
                         return;
@@ -34,77 +48,61 @@ __global__ void findMatch(Picture* picture, Obj* object, int matchingValue, int 
     }
 }
 
+
 void cudaFuncs(Picture* picture, Obj* object, int* matchingValue)
 {
-    Picture *dev_pic = 0;
-    Obj *dev_object = 0;
+    int *dev_pic = 0;
+    int *dev_obj = 0;
     cudaError_t status = cudaSuccess;
     int numOfThreads, numOfBlocks;
     int pictureSize = picture->picSize;
     int objectSize = object->objSize;
+    int* isMatch = 0;
 
-    if ((picture->picSize * picture->picSize) > MAX_THREADS_IN_BLOCK)
+    if ((pictureSize * pictureSize) > MAX_THREADS_IN_BLOCK)
     {
         numOfThreads = MAX_THREADS_IN_BLOCK;
-        numOfBlocks = ((picture->picSize * picture->picSize)/numOfThreads) + 1;
+        numOfBlocks = ((pictureSize * pictureSize)/numOfThreads) + 1;
     }
     else
     {
-        numOfThreads = (picture->picSize * picture->picSize);
+        numOfThreads = (pictureSize * pictureSize);
         numOfBlocks = 1;
     }
 
-    status = cudaMalloc((void**)&dev_pic, sizeof(int) * pictureSize);
-    if(status != cudaSuccess)
+    // picture's device
+    status = cudaMalloc((void**)&dev_pic, sizeof(int) * pictureSize * pictureSize);
+    checkStatus(status, "Failded to allocate memory for picture in GPU\n");
+
+    status = cudaMemcpy(dev_pic, picture->picArr, pictureSize*pictureSize*sizeof(int),cudaMemcpyHostToDevice);
+    checkStatus(status, "CudaMemcpy to device failed! (dev_pic)\n");
+
+    // object's device
+    status = cudaMalloc((void**)&dev_obj, sizeof(int) * objectSize * objectSize);
+    checkStatus(status, "Failded to allocate memory for object in GPU\n");
+
+    status = cudaMemcpy(dev_obj, object->objArr, objectSize*objectSize*sizeof(int),cudaMemcpyHostToDevice);
+    checkStatus(status, "CudaMemcpy to DEVICE Failed! (dev_obj)\n");
+
+
+    // starting CUDA
+    for(int row = 0; row < objectSize; row++)
     {
-        printf("Failded to allocate memory for picture in GPU\n");
-        exit(1);
+        for(int col = 0; col < objectSize; col++)
+        {
+            findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, row, col, pictureSize, objectSize, isMatch);
+        }
     }
-    status = cudaMemcpy(dev_seq1, seq1, seq1Len*sizeof(char),cudaMemcpyHostToDevice);
-    checkStatus(status , "CudaMemcpy to DEVICE Failed! (dev_seq1)");
-
-    //Seq2
-    status = cudaMalloc((void**)&dev_seq2, sizeof(char) * seq2Len);
-    checkStatus(status , "CudaMalloc Failed! (dev_seq2)");
-    status = cudaMemcpy(dev_seq2, seq2, seq2Len*sizeof(char),cudaMemcpyHostToDevice);
-    checkStatus(status , "CudaMemcpy to DEVICE Failed! (dev_seq2)");
-
-    //Weight array
-    status = cudaMalloc((void**)&dev_weights, sizeof(float) * WEIGHTS);
-    checkStatus(status , "CudaMalloc Failed! (dev_weights)");
-    status = cudaMemcpy(dev_weights, weightArr, WEIGHTS*sizeof(float),cudaMemcpyHostToDevice);
-    checkStatus(status , "CudaMemcpy to DEVICE Failed! (dev_weights)");
-
-    //Device best score
-    status = cudaMalloc((void**)&dev_bestMutant, sizeof(Score));
-    checkStatus(status , "CudaMalloc Failed! (dev_bestMutant)tell me why??");
-    status = cudaMemcpy(dev_bestMutant, &tempScore, sizeof(Score),cudaMemcpyHostToDevice);
-    checkStatus(status , "CudaMemcpy to DEVICE Failed! (dev_weights)");
-
-    //Device score array
-    status = cudaMalloc((void**)&dev_mutantArr, sizeof(Score) * (*mutantArrSize));
-    checkStatus(status , "CudaMalloc Failed! (dev_bestMutant)");
-    status = cudaMemcpy(dev_mutantArr, mutantArr, sizeof(Score) * (*mutantArrSize),cudaMemcpyHostToDevice);
-    checkStatus(status , "CudaMemcpy to DEVICE Failed! (dev_weights)");
-
-    //---------------- START CUDA -----------------------
-    cudaCalculations<<<numOfBlocks, numOfThreads>>>(dev_seq1, dev_seq2, seq2Len, dev_mutantArr, *mutantArrSize, dev_weights, dev_bestMutant);
     status = cudaDeviceSynchronize();
-    checkStatus(status , "Synchronize Failed!");
+    checkStatus(status, "Synchronize Failed!\n");
 
-    //---------------- COPY DATA BACK TO HOST -----------------------
-    status = cudaMemcpy(bestMutant, dev_bestMutant, sizeof(Score),cudaMemcpyDeviceToHost);
-    checkStatus(status , "CudaMemcpy to DEVICE Failed! (bestMutant)");
+    // //---------------- COPY DATA BACK TO HOST -----------------------
+    // status = cudaMemcpy(bestMutant, dev_bestMutant, sizeof(Score),cudaMemcpyDeviceToHost);
+    // checkStatus(status , "CudaMemcpy to device failed! (bestMutant)");
 
-    //---------------- FREE MEMORY -----------------------
-    status = cudaFree(dev_seq1);
-    checkStatus(status,"Cuda Free Failed! (dev_seq1)");
-    status = cudaFree(dev_seq2);
-    checkStatus(status,"Cuda Free Failed! (dev_seq2)");
-    status = cudaFree(dev_weights);
-    checkStatus(status,"Cuda Free Failed! (dev_weights)");
-    status = cudaFree(dev_bestMutant);
-    checkStatus(status,"Cuda Free Failed! (dev_bestMutant)");
-    status = cudaFree(dev_mutantArr);
-    checkStatus(status,"Cuda Free Failed! (dev_mutantArr)");
+    // free memory
+    status = cudaFree(dev_pic);
+    checkStatus(status,"Cuda Free function failed! (dev_pic)\n");
+    status = cudaFree(dev_obj);
+    checkStatus(status,"Cuda Free function failed! (dev_obj)\n");
 }
