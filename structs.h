@@ -16,3 +16,11 @@ typedef struct obj
 	int objSize;
 	int* objArr;
 } Obj;
+
+typedef struct match
+{
+	int isMatch;
+	int objectId;
+	int row;
+	int col;
+} Match;
