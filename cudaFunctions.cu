@@ -21,6 +21,7 @@ __device__ int calcDiff(int p, int o)
 
 __global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, Match* match, int objectId)
 {
+    printf("start findMatch function\n\n");
     int result = 0;
 
     int tx = threadIdx.x;
@@ -32,6 +33,8 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
 
     int row = s / picSize;
     int col = s - picSize * row;
+
+    printf("row = %d, col = %d\n", row, col);
 
     if ((row + objSize) < picSize && (col + objSize) < picSize)
     {
@@ -72,6 +75,7 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
 
 void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
 {
+    printf("start cudaFuncs function\n\n");
     int *dev_pic = 0;
     int *dev_obj = 0;
     cudaError_t status = cudaSuccess;
@@ -92,26 +96,40 @@ void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
         numOfBlocks = 1;
     }
 
+    printf("start allocating memory\n");
+    printf("picSize for allocation is %d\n", pictureSize);
     // picture's device
     status = cudaMalloc((void**)&dev_pic, sizeof(int) * pictureSize * pictureSize);
     checkStatus(status, "Faild to allocate memory for picture in GPU\n");
 
+    printf("succeeded allocating memory for dev_pic\n");
+
     status = cudaMemcpy(dev_pic, picture->picArr, pictureSize*pictureSize*sizeof(int),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_pic)\n");
+
+    printf("succeeded copy memory for dev_pic\n");
 
     // object's device
     status = cudaMalloc((void**)&dev_obj, sizeof(int) * objectSize * objectSize);
     checkStatus(status, "Faild to allocate memory for object in GPU\n");
 
+    printf("succeeded allocating memory for dev_obj\n");
+
     status = cudaMemcpy(dev_obj, object->objArr, objectSize*objectSize*sizeof(int),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_obj)\n");
+
+    printf("succeeded copy memory for dev_obj\n");
 
     // match's device
     status = cudaMalloc((void**)&dev_match, sizeof(Match));
     checkStatus(status, "Faild to allocate memory for match in GPU\n");
 
+    printf("succeeded allocating memory for dev_match\n");
+
     status = cudaMemcpy(dev_match, match, sizeof(Match),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_match)\n");
+
+    printf("succeeded copy memory for dev_match\n");
 
     // starting CUDA
     findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match, objId);

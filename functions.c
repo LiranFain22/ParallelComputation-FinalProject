@@ -173,7 +173,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, int* matchi
 			}
 		}
 	}
-	freePictures(pictures, *numOfPics);
+	// freePictures(pictures, *numOfPics);
 }
 
 void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs)
@@ -252,6 +252,7 @@ void searchForMatch(Picture** pictures, Obj** objects, int* matching, int* numOf
 	{
 		#pragma omp parallel
 		{
+			printf("OMP thread number = %d\n", omp_get_thread_num());
 			#pragma omp for private(myMatch)
 			for(int j = 0; j < *numOfObjs; j++)
 			{

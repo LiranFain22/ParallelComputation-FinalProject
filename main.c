@@ -26,7 +26,8 @@ int main(int argc, char* argv[]){
 	else{
 		runMaster(p, "/home/linuxu/ParallelComputationFinalProject/input2.txt", &pictures, &objects, &matching, &numOfPics, &numOfObjs);
 	}
-
+	// TODO - delete print
+	printf("start searchForMatch function:\n\n");
 	/* --- search for match --- */
 	searchForMatch(&pictures, &objects, &matching, &numOfPics, &numOfObjs, my_rank);
 
