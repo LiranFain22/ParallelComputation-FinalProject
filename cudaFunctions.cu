@@ -27,7 +27,8 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
     int bx = blockIdx.x;
     int s = bx * blockDim.x + tx;
     int foundMatch = 1;
-    __shared__ int bestMatchIdx = 0;
+    __shared__ int bestMatchIdx;
+    bestMatchIdx = -1;
 
     int row = s / picSize;
     int col = s - picSize * row;
@@ -113,13 +114,9 @@ void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
     checkStatus(status, "CudaMemcpy to device failed! (dev_match)\n");
 
     // starting CUDA
-    for(int row = 0; row < objectSize; row++)
-    {
-        for(int col = 0; col < objectSize; col++)
-        {
-            findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match, objId);
-        }
-    }
+    findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match, objId);
+    
+    
     status = cudaDeviceSynchronize();
     checkStatus(status, "Synchronize Failed!\n");
 

@@ -24,7 +24,7 @@ int main(int argc, char* argv[]){
 		runSlave(&pictures, &objects, &matching, &numOfPics, &numOfObjs);
 	}
 	else{
-		runMaster(p, "/home/linuxu/ParallelComputationFinalProject/src/input2.txt", &pictures, &objects, &matching, &numOfPics, &numOfObjs);
+		runMaster(p, "/home/linuxu/ParallelComputationFinalProject/input2.txt", &pictures, &objects, &matching, &numOfPics, &numOfObjs);
 	}
 
 	/* --- search for match --- */

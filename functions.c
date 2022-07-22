@@ -244,19 +244,31 @@ void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, 
 // TODO: remove 'my_rank' parameter
 void searchForMatch(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs, int my_rank)
 {
-	Match match;
+	int foundMatch = 0;
+	Match myMatch;
+	myMatch.isMatch = 0;
+
 	for(int i = 0; i < *numOfPics; i++)
 	{
 		#pragma omp parallel
 		{
-			#pragma omp for
+			#pragma omp for private(myMatch)
 			for(int j = 0; j < *numOfObjs; j++)
 			{
-				cudaFuncs(pictures[i], objects[j], matching, &match);
-				if (match.isMatch)
-				{
-					printf("Picture %d found Object %d in Position(%d,%d)\n", i, match.objectId, match.row, match.col);
-				}
+				if(foundMatch == 0)
+					cudaFuncs(pictures[i], objects[j], matching, &myMatch);
+				else
+					continue;
+
+				//critical code - update the match with my match
+				//TODO - define a omp private match then in the critical code
+				// change the shared match
+				#pragma omp critical
+					if (foundMatch == 0)
+					{
+						foundMatch = 1;
+						printf("Picture %d found Object %d in Position(%d,%d)\n", i, myMatch.objectId, myMatch.row, myMatch.col);
+					}
 			}
 		}
 	}

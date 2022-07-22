@@ -11,4 +11,4 @@
 
 // __global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, int* isMatch);
 
-void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, int* isMatch);
+void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match);
