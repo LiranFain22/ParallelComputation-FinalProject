@@ -19,7 +19,7 @@ __device__ int calcDiff(int p, int o)
     return abs((p - o) / p);
 }
 
-__global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, Match* match)
+__global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, Match* match, int objectId)
 {
     int result = 0;
 
@@ -27,6 +27,7 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
     int bx = blockIdx.x;
     int s = bx * blockDim.x + tx;
     int foundMatch = 1;
+    __shared__ int bestMatchIdx = 0;
 
     int row = s / picSize;
     int col = s - picSize * row;
@@ -40,7 +41,7 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
                     int objIdx = (i * objSize) + j;
                     int picIdx = ((row + i) * picSize) + (col + j);
                     result += calcDiff(picture[picIdx], object[objIdx]);
-                    if (result > matchingValue)
+                    if (result > matchingValue || match->isMatch)
                     {
                         foundMatch = 0;
                         break;
@@ -50,9 +51,20 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
             }
             __syncthreads();
             //atomic min if foundMatch is 1
+            if (foundMatch == 1) 
+            {
+                atomicMin(&bestMatchIdx, s);
+            }
             __syncthreads();
             // check if i am min
                 // if i do, update is match with row, col, obj id, is match
+            if (s == bestMatchIdx)
+            {
+                (*match).isMatch = 1;
+                (*match).row = row;
+                (*match).col = col;
+                (*match).objectId = objectId;
+            }
     }
 }
 
@@ -65,6 +77,7 @@ void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
     int numOfThreads, numOfBlocks;
     int pictureSize = picture->picSize;
     int objectSize = object->objSize;
+    int objId = object->objId;
     Match* dev_match = 0;
 
     if ((pictureSize * pictureSize) > MAX_THREADS_IN_BLOCK)
@@ -99,13 +112,12 @@ void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
     status = cudaMemcpy(dev_match, match, sizeof(Match),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_match)\n");
 
-
     // starting CUDA
     for(int row = 0; row < objectSize; row++)
     {
         for(int col = 0; col < objectSize; col++)
         {
-            findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match);
+            findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match, objId);
         }
     }
     status = cudaDeviceSynchronize();
