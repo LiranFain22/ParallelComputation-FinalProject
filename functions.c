@@ -1,7 +1,7 @@
 #include "functions.h"
 #include "mpi.h"
 
-void parseFile(char* path, int* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects)
+void parseFile(char* path, float* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects)
 {
 	FILE* fp;
 
@@ -11,7 +11,7 @@ void parseFile(char* path, int* matchingValue, int* numOfPics, Picture** picture
 		exit(1);
 	}
 
-	if(fscanf(fp, "%d %d", matchingValue, numOfPics) == EOF)
+	if(fscanf(fp, "%f %d", matchingValue, numOfPics) == EOF)
 	{
 		perror("Could not read matching and numOfPics from file!\n");fflush(stdout);
 		exit(1);
@@ -87,7 +87,7 @@ void freeObjects(Obj** objects, int numOfObjs)
 	free(objects);
 }
 
-void runMaster(int p, char* path, Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs)
+void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
 {
 	Picture* allPictures;
 	int numOfAllPictures;
@@ -125,7 +125,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, int* matchi
 		} 
 		else
 		{
-			MPI_Send(matching, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+			MPI_Send(matching, 1, MPI_FLOAT, i, 0, MPI_COMM_WORLD);
 			MPI_Send(numOfObjs, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
 			for(int j = 0; j < (*numOfObjs); j++)
 			{
@@ -152,10 +152,10 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, int* matchi
 	// freePictures(pictures, *numOfPics);
 }
 
-void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs)
+void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
 {
 
-	MPI_Recv(matching, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv(matching, 1, MPI_FLOAT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	MPI_Recv(numOfObjs, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
@@ -196,23 +196,19 @@ void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, 
 	}
 }
 
-// TODO: remove 'my_rank' parameter
-void searchForMatch(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs, int my_rank)
+void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
 {
-	// printf("in thread num %d, with numPics = %d and numObj = %d\n", my_rank, *numOfPics, *numOfObjs);
 	int foundMatch = 0;
 	Match myMatch;
 
 	for(int i = 0; i < *numOfPics; i++)
 	{
-		// printf("in pic num : %d\n", i);
 		#pragma omp parallel
 		{
 			#pragma omp for private(myMatch)
 			for(int j = 0; j < *numOfObjs; j++)
 			{
 				myMatch.isMatch = 0;
-				// printf("my rank is %d, OMP thread number = %d\n", my_rank, omp_get_thread_num());
 				if(foundMatch == 0)
 				{
 					cudaFuncs(&(*pictures)[i], &(*objects)[j], matching, &myMatch);
@@ -228,7 +224,7 @@ void searchForMatch(Picture** pictures, Obj** objects, int* matching, int* numOf
 					if (foundMatch == 0 && myMatch.isMatch == 1)
 					{
 						foundMatch = 1;
-						printf("--------------my_rank = %d : Picture %d found Object %d in Position(%d,%d)\n", my_rank, i, myMatch.objectId, myMatch.row, myMatch.col);
+						printf("Picture %d found Object %d in Position(%d,%d)\n", i, myMatch.objectId, myMatch.row, myMatch.col);
 					}
 			}
 		}

@@ -7,14 +7,14 @@
 #include "cudaFunctions.h"
 
 
-void parseFile(char* path, int* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects);
+void parseFile(char* path, float* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects);
 
 void freePictures(Picture** pictures, int numOfPics);
 
 void freeObjects(Obj** objects, int numOfObjs);
 
-void runMaster(int p, char* path, Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs);
+void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs);
 
-void runSlave(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs);
+void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs);
 
-void searchForMatch(Picture** pictures, Obj** objects, int* matching, int* numOfPics, int* numOfObjs, int my_rank);
+void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs);

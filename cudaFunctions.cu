@@ -37,7 +37,7 @@ __device__ float calcDiff(float p, float o)
 //     printf("---- array end ----\n\n");
 // }
 
-__global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, Match* match, int objectId)
+__global__ void findMatch(int* picture, int* object, float matchingValue, int picSize, int objSize, Match* match, int objectId)
 {
     float result = 0.0;
 
@@ -100,7 +100,7 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
 }
 
 
-void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
+void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match)
 {
     int *dev_pic = 0;
     int *dev_obj = 0;
