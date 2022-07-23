@@ -9,20 +9,37 @@ void checkStatus(cudaError_t cudaStatus, const char* errorMsg)
 {
     if(cudaStatus != cudaSuccess)
     {
-        printf("%s\n",errorMsg);
+        perror(errorMsg);
         exit(1);
     }
 }
 
-__device__ int calcDiff(int p, int o)
+__device__ float calcDiff(float p, float o)
 {
     return abs((p - o) / p);
 }
 
+// __device__ void printArray(int* arr, int arrSize, int threadNum, int isPic)
+// {
+//     if(isPic == 1)
+//         printf("----picture start for thread num: %d ----\n", threadNum);
+//     else
+//         printf("----object start for thread num: %d ----\n", threadNum);
+
+//     for(int i=0; i<arrSize; i++)
+//     {
+//         for(int j=0; j<arrSize; j++)
+//         {
+//             printf("|%d|", arr[i*arrSize + j]);
+//         }
+//         printf("\n");
+//     }
+//     printf("---- array end ----\n\n");
+// }
+
 __global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, Match* match, int objectId)
 {
-    printf("start findMatch function\n\n");
-    int result = 0;
+    float result = 0.0;
 
     int tx = threadIdx.x;
     int bx = blockIdx.x;
@@ -34,9 +51,8 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
     int row = s / picSize;
     int col = s - picSize * row;
 
-    printf("row = %d, col = %d\n", row, col);
 
-    if ((row + objSize) < picSize && (col + objSize) < picSize)
+    if ((row + objSize) <= picSize && (col + objSize) <= picSize)
     {
             for(int i = 0; i < objSize; i++)
             {
@@ -44,8 +60,13 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
                 {
                     int objIdx = (i * objSize) + j;
                     int picIdx = ((row + i) * picSize) + (col + j);
-                    result += calcDiff(picture[picIdx], object[objIdx]);
-                    if (result > matchingValue || match->isMatch)
+                    
+                    result += calcDiff(__int2float_rd(picture[picIdx]), __int2float_rd(object[objIdx]));
+                    if(row == 1 && col == 1)
+                    {
+                        printf("picture[picIdx] = %d, object[objIdx] = %d, result = %d\n",  picture[picIdx], object[objIdx], result);
+                    }
+                    if (result > matchingValue || match->isMatch==1)
                     {
                         foundMatch = 0;
                         break;
@@ -57,7 +78,7 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
             //atomic min if foundMatch is 1
             if (foundMatch == 1) 
             {
-                atomicMin(&bestMatchIdx, s);
+                atomicMax(&bestMatchIdx, s);
             }
             __syncthreads();
             // check if i am min
@@ -68,14 +89,19 @@ __global__ void findMatch(int* picture, int* object, int matchingValue, int picS
                 (*match).row = row;
                 (*match).col = col;
                 (*match).objectId = objectId;
+                printf("cudaaaaaa found match in row = %d and col = %d\n", row, col);
+            }
+            else
+            {
+                (*match).isMatch = 0;
             }
     }
+
 }
 
 
 void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
 {
-    printf("start cudaFuncs function\n\n");
     int *dev_pic = 0;
     int *dev_obj = 0;
     cudaError_t status = cudaSuccess;
@@ -84,6 +110,7 @@ void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
     int objectSize = object->objSize;
     int objId = object->objId;
     Match* dev_match = 0;
+    // dev_match->isMatch = 0;
 
     if ((pictureSize * pictureSize) > MAX_THREADS_IN_BLOCK)
     {
@@ -96,51 +123,38 @@ void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
         numOfBlocks = 1;
     }
 
-    printf("start allocating memory\n");
-    printf("picSize for allocation is %d\n", pictureSize);
+    // printf("starting cude with match is match = %d\n", (*match).isMatch);
+    // printf("picSize for allocation is %d\n", pictureSize);
     // picture's device
     status = cudaMalloc((void**)&dev_pic, sizeof(int) * pictureSize * pictureSize);
     checkStatus(status, "Faild to allocate memory for picture in GPU\n");
 
-    printf("succeeded allocating memory for dev_pic\n");
+    // printf("succeeded allocating memory for dev_pic\n");
 
     status = cudaMemcpy(dev_pic, picture->picArr, pictureSize*pictureSize*sizeof(int),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_pic)\n");
-
-    printf("succeeded copy memory for dev_pic\n");
 
     // object's device
     status = cudaMalloc((void**)&dev_obj, sizeof(int) * objectSize * objectSize);
     checkStatus(status, "Faild to allocate memory for object in GPU\n");
 
-    printf("succeeded allocating memory for dev_obj\n");
-
     status = cudaMemcpy(dev_obj, object->objArr, objectSize*objectSize*sizeof(int),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_obj)\n");
-
-    printf("succeeded copy memory for dev_obj\n");
 
     // match's device
     status = cudaMalloc((void**)&dev_match, sizeof(Match));
     checkStatus(status, "Faild to allocate memory for match in GPU\n");
 
-    printf("succeeded allocating memory for dev_match\n");
 
     status = cudaMemcpy(dev_match, match, sizeof(Match),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_match)\n");
 
-    printf("succeeded copy memory for dev_match\n");
 
     // starting CUDA
     findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match, objId);
     
-    
     status = cudaDeviceSynchronize();
     checkStatus(status, "Synchronize Failed!\n");
-
-    // //---------------- COPY DATA BACK TO HOST -----------------------
-    // status = cudaMemcpy(bestMutant, dev_bestMutant, sizeof(Score),cudaMemcpyDeviceToHost);
-    // checkStatus(status , "CudaMemcpy to device failed! (bestMutant)");
 
     // copy data back to host
     status = cudaMemcpy(match, dev_match, sizeof(Match),cudaMemcpyDeviceToHost);
@@ -149,8 +163,11 @@ void cudaFuncs(Picture* picture, Obj* object, int* matchingValue, Match* match)
     // free memory
     status = cudaFree(dev_pic);
     checkStatus(status,"Cuda Free function failed! (dev_pic)\n");
+
     status = cudaFree(dev_obj);
     checkStatus(status,"Cuda Free function failed! (dev_obj)\n");
+
     status = cudaFree(dev_match);
     checkStatus(status,"Cuda Free function failed! (dev_match)\n");
+
 }

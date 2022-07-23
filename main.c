@@ -22,12 +22,15 @@ int main(int argc, char* argv[]){
 	/* preparing data from each process */
 	if (my_rank !=0){
 		runSlave(&pictures, &objects, &matching, &numOfPics, &numOfObjs);
+		// printf("slave got numOfPic = %d, picture[3] = %d, picture[4] = %d\n",numOfPics, pictures[0].picArr[3], pictures[0].picArr[4]);
+
 	}
 	else{
-		runMaster(p, "/home/linuxu/ParallelComputationFinalProject/input2.txt", &pictures, &objects, &matching, &numOfPics, &numOfObjs);
+		runMaster(p, "/home/linuxu/ParallelComputationFinalProject/input.txt", &pictures, &objects, &matching, &numOfPics, &numOfObjs);
+		// printf("master got numOfPic = %d, picture[3] = %d, picture[4] = %d\n",numOfPics, pictures[0].picArr[3], pictures[0].picArr[4]);
 	}
 	// TODO - delete print
-	printf("start searchForMatch function:\n\n");
+	// printf("start searchForMatch function:\n\n");
 	/* --- search for match --- */
 	searchForMatch(&pictures, &objects, &matching, &numOfPics, &numOfObjs, my_rank);
 
