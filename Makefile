@@ -8,7 +8,7 @@ clean:
 	rm -f *.o ./mpiCudaOpemMP
 
 run:
-	mpiexec -np 2 ./mpiCudaOpemMP 
+	mpiexec -np 2 ./mpiCudaOpemMP > result.txt
 
 twoComputers:
 	mpiexec -np 2 -machinefile mf -map-by node ./mpiCudaOpemMP

@@ -5,6 +5,10 @@
 #include "cudaFunctions.h"
 #include <math.h>
 
+/*
+ * This function checks if a command was completed successfully, 
+ * if not, sends an appropriate error message.
+ */
 void checkStatus(cudaError_t cudaStatus, const char* errorMsg)
 {
     if(cudaStatus != cudaSuccess)
@@ -14,29 +18,17 @@ void checkStatus(cudaError_t cudaStatus, const char* errorMsg)
     }
 }
 
+/*
+ * This function calculate difference for overlapping members
+ */
 __device__ float calcDiff(float p, float o)
 {
     return abs((p - o) / p);
 }
 
-// __device__ void printArray(int* arr, int arrSize, int threadNum, int isPic)
-// {
-//     if(isPic == 1)
-//         printf("----picture start for thread num: %d ----\n", threadNum);
-//     else
-//         printf("----object start for thread num: %d ----\n", threadNum);
-
-//     for(int i=0; i<arrSize; i++)
-//     {
-//         for(int j=0; j<arrSize; j++)
-//         {
-//             printf("|%d|", arr[i*arrSize + j]);
-//         }
-//         printf("\n");
-//     }
-//     printf("---- array end ----\n\n");
-// }
-
+/*
+ * This function finds a match using calcDiff function.
+ */
 __global__ void findMatch(int* picture, int* object, float matchingValue, int picSize, int objSize, Match* match, int objectId)
 {
     float result = 0.0;
@@ -64,7 +56,7 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
                     result += calcDiff(__int2float_rd(picture[picIdx]), __int2float_rd(object[objIdx]));
                     if(row == 1 && col == 1)
                     {
-                        printf("picture[picIdx] = %d, object[objIdx] = %d, result = %d\n",  picture[picIdx], object[objIdx], result);
+                        // printf("picture[picIdx] = %d, object[objIdx] = %d, result = %d\n",  picture[picIdx], object[objIdx], result);
                     }
                     if (result > matchingValue || match->isMatch==1)
                     {
@@ -89,7 +81,7 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
                 (*match).row = row;
                 (*match).col = col;
                 (*match).objectId = objectId;
-                printf("cudaaaaaa found match in row = %d and col = %d\n", row, col);
+                // printf("cudaaaaaa found match in row = %d and col = %d\n", row, col);
             }
             else
             {
@@ -99,7 +91,9 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
 
 }
 
-
+/*
+ * This function calculate match with CUDA functions
+ */
 void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match)
 {
     int *dev_pic = 0;

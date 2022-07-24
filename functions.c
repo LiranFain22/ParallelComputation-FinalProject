@@ -75,7 +75,7 @@ void freePictures(Picture** pictures, int numOfPics)
     {
 		free((*pictures)[i].picArr);
     }
-	free(pictures);
+	free(*pictures);
 }
 
 void freeObjects(Obj** objects, int numOfObjs)
@@ -84,7 +84,7 @@ void freeObjects(Obj** objects, int numOfObjs)
     {
 		free((*objects)[i].objArr);
     }
-	free(objects);
+	free(*objects);
 }
 
 void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
@@ -149,7 +149,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 			}
 		}
 	}
-	// freePictures(pictures, *numOfPics);
+	freePictures(&allPictures, numOfAllPictures);
 }
 
 void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
@@ -224,7 +224,7 @@ void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* num
 					if (foundMatch == 0 && myMatch.isMatch == 1)
 					{
 						foundMatch = 1;
-						printf("Picture %d found Object %d in Position(%d,%d)\n", i, myMatch.objectId, myMatch.row, myMatch.col);
+						printf("Picture %d found Object %d in Position(%d,%d)\n", (*pictures)[i].picId, myMatch.objectId, myMatch.row, myMatch.col);
 					}
 			}
 		}

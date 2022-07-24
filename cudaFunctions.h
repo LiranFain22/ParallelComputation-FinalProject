@@ -7,8 +7,5 @@
 
 #define MAX_THREADS_IN_BLOCK 1024
 
-// __device__ int calcDiff(int p, int o);
-
-// __global__ void findMatch(int* picture, int* object, int matchingValue, int picSize, int objSize, int* isMatch);
-
+/* This function calculate match with CUDA functions */
 void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match);
