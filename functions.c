@@ -104,7 +104,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 
 	for(int i = 0; i < p; i++)
 	{
-		if (i == 0)
+		if (i == MASTER)
 		{
 			*pictures = (Picture*)malloc(sizeof(Picture)*portionSize);
 			if(!*pictures)
@@ -155,9 +155,9 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
 {
 
-	MPI_Recv(matching, 1, MPI_FLOAT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv(matching, 1, MPI_FLOAT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-	MPI_Recv(numOfObjs, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv(numOfObjs, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	*(objects) = (Obj*)malloc(sizeof(Obj)*(*numOfObjs));
 	if(!*(objects))
@@ -167,31 +167,31 @@ void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics
 	}
 	for(int i = 0; i < (*numOfObjs); i++)
 	{
-		MPI_Recv(&(*objects)[i].objId, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv(&(*objects)[i].objId, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-		MPI_Recv(&(*objects)[i].objSize, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv(&(*objects)[i].objSize, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 		(*objects)[i].objArr = (int*)malloc(sizeof(int)*(*objects)[i].objSize*(*objects)[i].objSize);
 		for(int j = 0; j < (*objects)[i].objSize * (*objects)[i].objSize; j++)
 		{
-			MPI_Recv(&(*objects)[i].objArr[j], 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Recv(&(*objects)[i].objArr[j], 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 	}
 
 
-	MPI_Recv(numOfPics, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv(numOfPics, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	*(pictures) = (Picture*)malloc(sizeof(Picture)*(*numOfPics));
 	for(int i = 0; i < (*numOfPics); i++)
 	{
-		MPI_Recv(&(*pictures)[i].picId, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv(&(*pictures)[i].picId, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-		MPI_Recv(&(*pictures)[i].picSize, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv(&(*pictures)[i].picSize, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 		(*pictures)[i].picArr = (int*)malloc(sizeof(int)*(*pictures)[i].picSize*(*pictures)[i].picSize);
 		for(int j = 0; j < (*pictures)[i].picSize*(*pictures)[i].picSize; j++)
 		{
-			MPI_Recv(&(*pictures)[i].picArr[j], 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Recv(&(*pictures)[i].picArr[j], 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 	}
 }
@@ -217,9 +217,6 @@ void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* num
 				else
 					continue;
 
-				//critical code - update the match with my match
-				//TODO - define a omp private match then in the critical code
-				// change the shared match
 				#pragma omp critical
 					if (foundMatch == 0 && myMatch.isMatch == 1)
 					{

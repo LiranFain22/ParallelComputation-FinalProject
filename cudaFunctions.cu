@@ -54,10 +54,7 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
                     int picIdx = ((row + i) * picSize) + (col + j);
                     
                     result += calcDiff(__int2float_rd(picture[picIdx]), __int2float_rd(object[objIdx]));
-                    if(row == 1 && col == 1)
-                    {
-                        // printf("picture[picIdx] = %d, object[objIdx] = %d, result = %d\n",  picture[picIdx], object[objIdx], result);
-                    }
+
                     if (result > matchingValue || match->isMatch==1)
                     {
                         foundMatch = 0;
@@ -81,7 +78,6 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
                 (*match).row = row;
                 (*match).col = col;
                 (*match).objectId = objectId;
-                // printf("cudaaaaaa found match in row = %d and col = %d\n", row, col);
             }
             else
             {
@@ -104,7 +100,6 @@ void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match
     int objectSize = object->objSize;
     int objId = object->objId;
     Match* dev_match = 0;
-    // dev_match->isMatch = 0;
 
     if ((pictureSize * pictureSize) > MAX_THREADS_IN_BLOCK)
     {
@@ -117,13 +112,10 @@ void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match
         numOfBlocks = 1;
     }
 
-    // printf("starting cude with match is match = %d\n", (*match).isMatch);
-    // printf("picSize for allocation is %d\n", pictureSize);
     // picture's device
     status = cudaMalloc((void**)&dev_pic, sizeof(int) * pictureSize * pictureSize);
     checkStatus(status, "Faild to allocate memory for picture in GPU\n");
 
-    // printf("succeeded allocating memory for dev_pic\n");
 
     status = cudaMemcpy(dev_pic, picture->picArr, pictureSize*pictureSize*sizeof(int),cudaMemcpyHostToDevice);
     checkStatus(status, "CudaMemcpy to device failed! (dev_pic)\n");

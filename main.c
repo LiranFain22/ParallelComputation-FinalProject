@@ -22,18 +22,19 @@ int main(int argc, char *argv[])
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
 
 	/* preparing data from each process */
-	if (my_rank != 0)
+	if (my_rank != MASTER)
 	{
 		runSlave(&pictures, &objects, &matching, &numOfPics, &numOfObjs);
 	}
 	else
 	{
-		runMaster(p, "/home/linuxu/ParallelComputationFinalProject/input2.txt", &pictures, &objects, &matching, &numOfPics, &numOfObjs);
+		runMaster(p, FILE_READ, &pictures, &objects, &matching, &numOfPics, &numOfObjs);
 	}
 
-	/* --- search for match --- */
+	/* search for matchs */
 	searchForMatch(&pictures, &objects, &matching, &numOfPics, &numOfObjs);
 
+	/* free memory allocations */
 	freePictures(&pictures, numOfPics);
 	freeObjects(&objects, numOfObjs);
 

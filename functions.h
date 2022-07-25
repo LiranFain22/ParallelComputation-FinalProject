@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <omp.h>
-#include "structs.h"
+#include "structsAndDefines.h"
 #include "cudaFunctions.h"
 
 /* This function reads data from input.txt */
