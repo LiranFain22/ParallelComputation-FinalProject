@@ -240,21 +240,23 @@ void createMatchType(MPI_Datatype *matchType)
 
 void printSlaveResult(Match* matches, int my_rank, int numOfSlavesPics)
 {
+	Match match;
 	MPI_Datatype MatchType;
     createMatchType(&MatchType);
 
-	for(int i = 0; i < numOfSlavesPics; i++)
+	if(my_rank == MASTER)
 	{
-		if(my_rank == SLAVE)
+		for(int i = 0; i < numOfSlavesPics; i++)
 		{
-			MPI_Send(&(matches[i]), 1, MatchType, MASTER, 0, MPI_COMM_WORLD);
-		}
-		else
-		{
-			printf("num of slaves pics: %d\n", numOfSlavesPics);
-			Match match;
 			MPI_Recv(&match, 1, MatchType, SLAVE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			printMatch(&match);
+		}
+	}
+	else
+	{
+		for(int i = 0; i < numOfSlavesPics; i++)
+		{
+			MPI_Send(&(matches[i]), 1, MatchType, MASTER, 0, MPI_COMM_WORLD);
 		}
 	}
 }

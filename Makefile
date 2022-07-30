@@ -11,4 +11,4 @@ run:
 	mpiexec -np 2 ./mpiCudaOpemMP > result.txt
 
 twoComputers:
-	mpiexec -np 2 -machinefile machines -map-by node ./mpiCudaOpemMP
+	mpiexec -np 2 -machinefile machines.txt -map-by node ./mpiCudaOpemMP

@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Jul 30 16:10:17 2022
+# Make data base, printed on Sat Jul 30 16:23:36 2022
 
 # Variables
 
@@ -199,9 +201,6 @@ XDG_CURRENT_DESKTOP = Unity
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
- 
-make: *** No rule to make target 'all'.  Stop.
-
 CONDA_SHLVL = 1
 # default
 MAKE_COMMAND := make
@@ -278,13 +277,14 @@ _CE_CONDA =
 
 # Pattern-specific Variable Values
 
+ 
 # No pattern-specific variable values.
 
 # Directories
 
-# . (device 2053, inode 2106086): 26 files, no impossibilities.
+# . (device 2053, inode 2106086): 27 files, no impossibilities.
 
-# 26 files, no impossibilities in 1 directories.
+# 27 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -302,7 +302,7 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-30 16:08:13.550671315
+#  Last modified 2022-07-30 16:20:59.710652894
 #  File has been updated.
 #  Successfully updated.
 
@@ -314,7 +314,7 @@ build:
 	mpicxx -fopenmp -g -c main.c -o main.o	
 	nvcc -I./inc -c cudaFunctions.cu -o cudaFunctions.o
 	mpicxx -fopenmp -g -c functions.c -o functions.o
-	mpicxx -fopenmp -o NewmpiCudaOpemMP  main.o functions.o cudaFunctions.o /usr/local/cuda-11.0/lib64/libcudart_static.a -ldl -lrt
+	mpicxx -fopenmp -o mpiCudaOpemMP  main.o functions.o cudaFunctions.o /usr/local/cuda-11.0/lib64/libcudart_static.a -ldl -lrt
 
 # Not a target:
 .DEFAULT:
@@ -327,21 +327,21 @@ run:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 11):
-	mpiexec -np 2 ./NewmpiCudaOpemMP > result.txt
+	mpiexec -np 2 ./mpiCudaOpemMP > result.txt
 
 clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 8):
-	rm -f *.o ./NewmpiCudaOpemMP
+	rm -f *.o ./mpiCudaOpemMP
 
 twoComputers:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 14):
-	mpiexec -np 2 -machinefile machines.txt -map-by node ./NewmpiCudaOpemMP
+	mpiexec -np 2 -machinefile machines.txt -map-by node ./mpiCudaOpemMP
 
 # files hash-table stats:
 # Load=8/1024=1%, Rehash=0, Collisions=0/18=0%
@@ -351,12 +351,13 @@ twoComputers:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 35 / storage = 408 B / avg = 11 B
-# current buf: size = 8162 B / used = 408 B / count = 35 / avg = 11 B
+# strcache buffers: 1 (0) / strings = 36 / storage = 422 B / avg = 11 B
+# current buf: size = 8162 B / used = 422 B / count = 36 / avg = 11 B
 
-# strcache performance: lookups = 43 / hit rate = 18%
+# strcache performance: lookups = 44 / hit rate = 18%
 # hash-table stats:
-# Load=35/8192=0%, Rehash=0, Collisions=1/43=2%
-# Finished Make data base on Sat Jul 30 16:10:17 2022
+# Load=36/8192=0%, Rehash=0, Collisions=1/44=2%
+ 
+# Finished Make data base on Sat Jul 30 16:23:36 2022
 
  

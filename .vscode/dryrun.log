@@ -3,6 +3,6 @@ make: Entering directory '/home/linuxu/ParallelComputationFinalProject'
 mpicxx -fopenmp -g -c main.c -o main.o	
 nvcc -I./inc -c cudaFunctions.cu -o cudaFunctions.o
 mpicxx -fopenmp -g -c functions.c -o functions.o
-mpicxx -fopenmp -o NewmpiCudaOpemMP  main.o functions.o cudaFunctions.o /usr/local/cuda-11.0/lib64/libcudart_static.a -ldl -lrt
+mpicxx -fopenmp -o mpiCudaOpemMP  main.o functions.o cudaFunctions.o /usr/local/cuda-11.0/lib64/libcudart_static.a -ldl -lrt
 make: Leaving directory '/home/linuxu/ParallelComputationFinalProject'
  
