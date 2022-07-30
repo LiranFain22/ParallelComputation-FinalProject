@@ -5,6 +5,8 @@
 #include <omp.h>
 #include "structsAndDefines.h"
 #include "cudaFunctions.h"
+#include "stddef.h"
+
 
 /* This function reads data from input.txt */
 void parseFile(char* path, float* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects);
@@ -16,10 +18,14 @@ void freePictures(Picture** pictures, int numOfPics);
 void freeObjects(Obj** objects, int numOfObjs);
 
 /* This function runs only from master process. Calculate portion to each process and send relevant data to specific process */
-void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs);
+void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfSlavePics, int* numOfObjs, Match** matches);
 
 /* This function runs only from slaves process. Receiving data to work with */
-void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs);
+void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, Match** matches);
 
 /* This function search for match between objects and pictures */
-void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs);
+void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, int my_rank, Match** matches);
+
+void printMatch(Match* myMatch);
+
+void printSlaveResult(Match* matches, int my_rank, int numOfSlavesPics);

@@ -1,5 +1,10 @@
 #include "functions.h"
 #include "mpi.h"
+#include <netdb.h>
+#include <ifaddrs.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 void parseFile(char* path, float* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects)
 {
@@ -87,7 +92,7 @@ void freeObjects(Obj** objects, int numOfObjs)
 	free(*objects);
 }
 
-void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
+void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfSlavePics, int* numOfObjs, Match** matches)
 {
 	Picture* allPictures;
 	int numOfAllPictures;
@@ -100,19 +105,24 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 	}
 
 	int portionSize = numOfAllPictures / p;
-	*numOfPics = portionSize;
+	int masterPortionSize = (numOfAllPictures - (portionSize*p)) + portionSize;
+	*numOfPics = masterPortionSize;
+	*numOfSlavePics = portionSize;
 
 	for(int i = 0; i < p; i++)
 	{
 		if (i == MASTER)
 		{
-			*pictures = (Picture*)malloc(sizeof(Picture)*portionSize);
+			*pictures = (Picture*)malloc(sizeof(Picture)*(*numOfPics));
 			if(!*pictures)
 			{
 				perror("Failed to create pictures..\n");
 				exit(1);
 			}
-			for(int j = 0; j < portionSize; j++)
+
+			*matches = (Match*)malloc(sizeof(Match)*(*numOfPics));
+
+			for(int j = 0; j < (*numOfPics); j++)
 			{
 				(*pictures)[j].picId = allPictures[j].picId;
 				(*pictures)[j].picSize = allPictures[j].picSize;
@@ -137,7 +147,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 				}
 			}
 			MPI_Send(&portionSize, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-			for(int j = portionSize * i; j < portionSize * (i + 1) ; j++)
+			for(int j = masterPortionSize + (portionSize * (i-1)); j < masterPortionSize + (portionSize * i) ; j++)
 			{
 				MPI_Send(&(allPictures)[j].picId, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
 
@@ -152,7 +162,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 	freePictures(&allPictures, numOfAllPictures);
 }
 
-void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
+void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, Match** matches)
 {
 
 	MPI_Recv(matching, 1, MPI_FLOAT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -165,6 +175,8 @@ void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics
 		perror("Failed to malloc objects..\n");
 		exit(1);
 	}
+
+	
 	for(int i = 0; i < (*numOfObjs); i++)
 	{
 		MPI_Recv(&(*objects)[i].objId, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -182,6 +194,9 @@ void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics
 	MPI_Recv(numOfPics, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	*(pictures) = (Picture*)malloc(sizeof(Picture)*(*numOfPics));
+
+	*matches = (Match*)malloc(sizeof(Match)*(*numOfPics));
+
 	for(int i = 0; i < (*numOfPics); i++)
 	{
 		MPI_Recv(&(*pictures)[i].picId, 1, MPI_INT, MASTER, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -196,13 +211,68 @@ void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics
 	}
 }
 
-void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs)
+
+void printMatch(Match* myMatch)
+{
+	if(myMatch->isMatch == 1)
+		printf("Picture %d found Object %d in Position(%d,%d)\n", myMatch->picId, myMatch->objectId, myMatch->row, myMatch->col);
+	else
+	{
+		printf("Picture %d No Objects were found\n", myMatch->picId);
+	}
+}
+
+void createMatchType(MPI_Datatype *matchType)
+{
+    int block_length[5] = {1, 1, 1, 1, 1};
+    MPI_Aint disp[5];
+    MPI_Datatype types[5] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
+
+    disp[0] = offsetof(Match, isMatch);
+    disp[1] = offsetof(Match, objectId);
+    disp[2] = offsetof(Match, picId);
+    disp[3]  = offsetof(Match, row);
+    disp[4]  = offsetof(Match, col);
+
+    MPI_Type_create_struct(5, block_length, disp, types, matchType);
+    MPI_Type_commit(matchType);
+}
+
+void printSlaveResult(Match* matches, int my_rank, int numOfSlavesPics)
+{
+	MPI_Datatype MatchType;
+    createMatchType(&MatchType);
+
+	for(int i = 0; i < numOfSlavesPics; i++)
+	{
+		if(my_rank == SLAVE)
+		{
+			MPI_Send(&(matches[i]), 1, MatchType, MASTER, 0, MPI_COMM_WORLD);
+		}
+		else
+		{
+			printf("num of slaves pics: %d\n", numOfSlavesPics);
+			Match match;
+			MPI_Recv(&match, 1, MatchType, SLAVE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			printMatch(&match);
+		}
+	}
+}
+
+
+void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, int my_rank, Match** matches)
 {
 	int foundMatch = 0;
 	Match myMatch;
+	Match finalMatch;
+	finalMatch.isMatch = 0;
+
 
 	for(int i = 0; i < *numOfPics; i++)
 	{
+		foundMatch = 0;
+		(*matches)[i].isMatch = 0;
+		(*matches)[i].picId = (*pictures)[i].picId;
 		#pragma omp parallel
 		{
 			#pragma omp for private(myMatch)
@@ -221,9 +291,11 @@ void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* num
 					if (foundMatch == 0 && myMatch.isMatch == 1)
 					{
 						foundMatch = 1;
-						printf("Picture %d found Object %d in Position(%d,%d)\n", (*pictures)[i].picId, myMatch.objectId, myMatch.row, myMatch.col);
+						(*matches)[i] = myMatch;
 					}
 			}
+			
 		}
 	}
+
 }

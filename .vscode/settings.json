@@ -5,6 +5,7 @@
         "cudafunctions.h": "c",
         "stdio.h": "c",
         "string.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "mpi.h": "c"
     }
 }

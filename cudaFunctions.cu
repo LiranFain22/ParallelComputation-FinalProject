@@ -29,7 +29,7 @@ __device__ float calcDiff(float p, float o)
 /*
  * This function finds a match using calcDiff function.
  */
-__global__ void findMatch(int* picture, int* object, float matchingValue, int picSize, int objSize, Match* match, int objectId)
+__global__ void findMatch(int* picture, int* object, float matchingValue, int picSize, int objSize, Match* match, int objectId, int picId)
 {
     float result = 0.0;
 
@@ -78,6 +78,7 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
                 (*match).row = row;
                 (*match).col = col;
                 (*match).objectId = objectId;
+                (*match).picId = picId;
             }
             else
             {
@@ -99,6 +100,7 @@ void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match
     int pictureSize = picture->picSize;
     int objectSize = object->objSize;
     int objId = object->objId;
+    int picId = picture->picId;
     Match* dev_match = 0;
 
     if ((pictureSize * pictureSize) > MAX_THREADS_IN_BLOCK)
@@ -137,7 +139,7 @@ void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match
 
 
     // starting CUDA
-    findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match, objId);
+    findMatch<<<numOfBlocks, numOfThreads>>>(dev_pic, dev_obj, *matchingValue, pictureSize, objectSize, dev_match, objId, picId);
     
     status = cudaDeviceSynchronize();
     checkStatus(status, "Synchronize Failed!\n");

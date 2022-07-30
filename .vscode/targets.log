@@ -1,87 +1,45 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.2.1
- 
 # Built for x86_64-pc-linux-gnu
- 
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
- 
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
- 
 # This is free software: you are free to change and redistribute it.
- 
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
- 
-# Make data base, printed on Wed Jul 27 20:03:29 2022
- 
+# Make data base, printed on Sat Jul 30 16:10:17 2022
 
 # Variables
- 
 
- 
 # 'override' directive
- 
 GNUMAKEFLAGS := 
- 
 # environment
- 
 PYSPARK_DRIVER_PYTHON_OPTS = notebook
- 
 # automatic
- 
 ?F = $(notdir $?)
- 
 # automatic
- 
 <D = $(patsubst %/,%,$(dir $<))
- 
 # environment
- 
 DESKTOP_SESSION = ubuntu
- 
 # environment
- 
 PYSPARK_DRIVER_PYTHON = jupyter
- 
 # default
- 
 .SHELLFLAGS := -c
- 
 # environment
- 
 XDG_SESSION_CLASS = user
- 
 # environment
- 
 SNAP_COMMON = /var/snap/code/common
- 
 # environment
- 
 XDG_SESSION_TYPE = x11
- 
 # automatic
- 
 ?D = $(patsubst %/,%,$(dir $?))
- 
 # automatic
- 
 @D = $(patsubst %/,%,$(dir $@))
- 
 # environment
- 
-XAUTHORITY = /var/run/gdm3/auth-for-linuxu-3QNBQ1/database
- 
+XAUTHORITY = /var/run/gdm3/auth-for-linuxu-0YQ3P1/database
 # environment
- 
 GDMSESSION = ubuntu
- 
 # environment
- 
 XMODIFIERS = @im=ibus
- 
 # makefile
 CURDIR := /home/linuxu/ParallelComputationFinalProject
 # makefile
@@ -93,7 +51,7 @@ VTE_VERSION = 6003
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:57681
+JOURNAL_STREAM = 8:1499139
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -113,7 +71,7 @@ XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share:/usr/share:/var/lib/snapd/des
 # environment
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
-MANAGERPID = 3965
+MANAGERPID = 132688
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -127,7 +85,7 @@ PATH = /usr/local/cuda-11.0/bin:/home/linuxu/anaconda3/bin:/home/linuxu/anaconda
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/ParallelCv4-7:@/tmp/.ICE-unix/4168,unix/ParallelCv4-7:/tmp/.ICE-unix/4168
+SESSION_MANAGER = local/Paralpool4q2-4:@/tmp/.ICE-unix/132908,unix/Paralpool4q2-4:/tmp/.ICE-unix/132908
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -145,7 +103,7 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = e9d2ab081853487880d782f03b4e2169
+INVOCATION_ID = 1ddc3b3405464b1cad57fce36fbbd2ac
 # environment
 GDK_PIXBUF_MODULEDIR = /snap/code/102/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
@@ -159,7 +117,7 @@ SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # automatic
 %F = $(notdir $%)
 # environment
-DISPLAY = :100
+DISPLAY = :101
 # environment
 CONDA_EXE = /home/linuxu/anaconda3/bin/conda
 # environment
@@ -169,7 +127,7 @@ PWD = /home/linuxu/ParallelComputationFinalProject
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 4140
+SSH_AGENT_PID = 132873
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -189,7 +147,7 @@ VSCODE_CODE_CACHE_PATH = /home/linuxu/.config/Code/CachedData/3b889b090b5ad5793f
 # environment
 LOGNAME = linuxu
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # environment
@@ -241,6 +199,9 @@ XDG_CURRENT_DESKTOP = Unity
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
+ 
+make: *** No rule to make target 'all'.  Stop.
+
 CONDA_SHLVL = 1
 # default
 MAKE_COMMAND := make
@@ -285,11 +246,11 @@ CONDA_PYTHON_EXE = /home/linuxu/anaconda3/bin/python
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/da7aa034_9355_4407_8577_4df74a2bacf8
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/27000fe5_aa91_4672_8ffe_925cb9293bfd
 # automatic
 ^F = $(notdir $^)
 # environment
-GNOME_TERMINAL_SERVICE = :1.104
+GNOME_TERMINAL_SERVICE = :1.113
 # default
 SUFFIXES := 
 # environment
@@ -309,7 +270,7 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 10955
+VSCODE_PID = 137258
 # environment
 _CE_CONDA = 
 # variable set hash-table stats:
@@ -321,7 +282,7 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 2053, inode 2100810): 26 files, no impossibilities.
+# . (device 2053, inode 2106086): 26 files, no impossibilities.
 
 # 26 files, no impossibilities in 1 directories.
 
@@ -341,7 +302,7 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-27 20:02:19.596348158
+#  Last modified 2022-07-30 16:08:13.550671315
 #  File has been updated.
 #  Successfully updated.
 
@@ -353,37 +314,34 @@ build:
 	mpicxx -fopenmp -g -c main.c -o main.o	
 	nvcc -I./inc -c cudaFunctions.cu -o cudaFunctions.o
 	mpicxx -fopenmp -g -c functions.c -o functions.o
-	mpicxx -fopenmp -o mpiCudaOpemMP  main.o functions.o cudaFunctions.o /usr/local/cuda-11.0/lib64/libcudart_static.a -ldl -lrt
+	mpicxx -fopenmp -o NewmpiCudaOpemMP  main.o functions.o cudaFunctions.o /usr/local/cuda-11.0/lib64/libcudart_static.a -ldl -lrt
 
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
- 
 #  File has not been updated.
- 
 
 run:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 11):
-	mpiexec -np 2 ./mpiCudaOpemMP > result.txt
+	mpiexec -np 2 ./NewmpiCudaOpemMP > result.txt
 
 clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 8):
-	rm -f *.o ./mpiCudaOpemMP
+	rm -f *.o ./NewmpiCudaOpemMP
 
 twoComputers:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 14):
-	mpiexec -np 2 -machinefile twoComputers.txt -map-by node ./mpiCudaOpemMP > result.txt
+	mpiexec -np 2 -machinefile machines.txt -map-by node ./NewmpiCudaOpemMP
 
 # files hash-table stats:
 # Load=8/1024=1%, Rehash=0, Collisions=0/18=0%
@@ -399,6 +357,6 @@ twoComputers:
 # strcache performance: lookups = 43 / hit rate = 18%
 # hash-table stats:
 # Load=35/8192=0%, Rehash=0, Collisions=1/43=2%
-# Finished Make data base on Wed Jul 27 20:03:29 2022
+# Finished Make data base on Sat Jul 30 16:10:17 2022
 
  
