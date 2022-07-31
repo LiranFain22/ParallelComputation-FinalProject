@@ -23,9 +23,14 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 /* This function runs only from slaves process. Receiving data to work with */
 void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, Match** matches);
 
-/* This function search for match between objects and pictures */
-void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, int my_rank, Match** matches);
-
+/* This function print match result, otherwise, prints an appropriate message */
 void printMatch(Match* myMatch);
 
+/* This function get rank of process.
+ * if this is a Slave process, then Slave process will send his result to Master process
+ * if this is a Master process, then recieve results from Slave process and prints them.
+ */
 void printSlaveResult(Match* matches, int my_rank, int numOfSlavesPics);
+
+/* This function search for match between objects and pictures */
+void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, int my_rank, Match** matches);

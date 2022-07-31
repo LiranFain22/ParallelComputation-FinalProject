@@ -1,11 +1,3 @@
-numOfProcess: 2
-<interface>: lo 	 <address> 127.0.0.1
-<interface>: ens160 	 <address> 192.168.90.54
-numOfProcess: 2
-<interface>: lo 	 <address> 127.0.0.1
-<interface>: ens160 	 <address> 192.168.90.54
-Picture 2 found Object 3 in Position(400,100)
 Picture 0 found Object 1 in Position(100,200)
-i have no logic wtfffff i have no logic wtfffff 
-
 Picture 1 No Objects were found
+Picture 2 found Object 0 in Position(800,800)

@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
+/* This function reads data from input.txt */
 void parseFile(char* path, float* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects)
 {
 	FILE* fp;
@@ -74,6 +75,7 @@ void parseFile(char* path, float* matchingValue, int* numOfPics, Picture** pictu
 	}
 }
 
+/* This function free pictures struct allocation from memory */
 void freePictures(Picture** pictures, int numOfPics)
 {
     for(int i = 0; i < numOfPics; i++)
@@ -83,6 +85,7 @@ void freePictures(Picture** pictures, int numOfPics)
 	free(*pictures);
 }
 
+/* This function free objects struct allocation from memory */
 void freeObjects(Obj** objects, int numOfObjs)
 {
     for(int i = 0; i < numOfObjs; i++)
@@ -92,6 +95,7 @@ void freeObjects(Obj** objects, int numOfObjs)
 	free(*objects);
 }
 
+/* This function runs only from master process. Calculate portion to each process and send relevant data to specific process */
 void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfSlavePics, int* numOfObjs, Match** matches)
 {
 	Picture* allPictures;
@@ -162,6 +166,7 @@ void runMaster(int p, char* path, Picture** pictures, Obj** objects, float* matc
 	freePictures(&allPictures, numOfAllPictures);
 }
 
+/* This function runs only from slaves process. Receiving data to work with */
 void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, Match** matches)
 {
 
@@ -211,7 +216,7 @@ void runSlave(Picture** pictures, Obj** objects, float* matching, int* numOfPics
 	}
 }
 
-
+/* This function print match result, otherwise, prints an appropriate message */
 void printMatch(Match* myMatch)
 {
 	if(myMatch->isMatch == 1)
@@ -222,6 +227,7 @@ void printMatch(Match* myMatch)
 	}
 }
 
+/* This function create Match MPI data type */
 void createMatchType(MPI_Datatype *matchType)
 {
     int block_length[5] = {1, 1, 1, 1, 1};
@@ -238,7 +244,11 @@ void createMatchType(MPI_Datatype *matchType)
     MPI_Type_commit(matchType);
 }
 
-void printSlaveResult(Match* matches, int my_rank, int numOfSlavesPics)
+/* This function get rank of process.
+ * if this is a Slave process, then Slave process will send his result to Master process
+ * if this is a Master process, then recieve results from Slave process and prints them.
+ */
+void printSlaveResult(Match* matches, int my_rank, int numOfPics)
 {
 	Match match;
 	MPI_Datatype MatchType;
@@ -246,7 +256,7 @@ void printSlaveResult(Match* matches, int my_rank, int numOfSlavesPics)
 
 	if(my_rank == MASTER)
 	{
-		for(int i = 0; i < numOfSlavesPics; i++)
+		for(int i = 0; i < numOfPics; i++)
 		{
 			MPI_Recv(&match, 1, MatchType, SLAVE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			printMatch(&match);
@@ -254,21 +264,18 @@ void printSlaveResult(Match* matches, int my_rank, int numOfSlavesPics)
 	}
 	else
 	{
-		for(int i = 0; i < numOfSlavesPics; i++)
+		for(int i = 0; i < numOfPics; i++)
 		{
 			MPI_Send(&(matches[i]), 1, MatchType, MASTER, 0, MPI_COMM_WORLD);
 		}
 	}
 }
 
-
+/* This function search for match between objects and pictures */
 void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* numOfPics, int* numOfObjs, int my_rank, Match** matches)
 {
-	int foundMatch = 0;
-	Match myMatch;
-	Match finalMatch;
-	finalMatch.isMatch = 0;
-
+	int foundMatch = 0; /* 1 = found object in picture; 0 = no object was found */
+	Match myMatch; 		/* each thread have private match */
 
 	for(int i = 0; i < *numOfPics; i++)
 	{
@@ -284,7 +291,6 @@ void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* num
 				if(foundMatch == 0)
 				{
 					cudaFuncs(&(*pictures)[i], &(*objects)[j], matching, &myMatch);
-
 				}
 				else
 					continue;

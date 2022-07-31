@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 	float matching;	   /* number of The total difference */
 	int numOfPics;	   /* number of pictures */
 	int numOfObjs;	   /* number of objects */
-	int numOfSlavesPics;
+	int numOfSlavesPics; /* number of pictures in each slave */
 	Picture *pictures; /* array of struct pictures */
 	Obj *objects;	   /* array of struct objects */
 	Match *matches;    /* array of struct matches */
@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
 
 	/* find out number of processes */
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
-	printf("numOfProcess: %d\n", p);
 
 	/* preparing data for each process */
 	if (my_rank != MASTER)
@@ -34,11 +33,12 @@ int main(int argc, char *argv[])
 		runMaster(p, FILE_READ, &pictures, &objects, &matching, &numOfPics, &numOfSlavesPics, &numOfObjs, &matches);
 	}
 
-	/* search for matchs */
+	/* search for matches */
 	searchForMatch(&pictures, &objects, &matching, &numOfPics, &numOfObjs, my_rank, &matches);
 
-	// print master result
-	// if master print 
+	/* 
+	*	1) master process will print matches (if there is some)
+	*/
 	if(my_rank == MASTER)
 	{
 		for(int i = 0; i < numOfPics; i++)
@@ -46,10 +46,19 @@ int main(int argc, char *argv[])
 			printMatch(&(matches[i]));
 		}
 	}
-	//print slave result
-	// if slave send
-	// if master recv and print
-	printSlaveResult(matches, my_rank, numOfSlavesPics);
+
+	/* 
+	*	2) slave process will send matches to master process
+	*   3) master process will print the rest matches.
+	*/
+	if(my_rank == MASTER)
+	{
+		printSlaveResult(matches, my_rank, numOfSlavesPics);
+	}
+	else
+	{
+		printSlaveResult(matches, my_rank, numOfPics);
+	}
 	
 
 	/* free memory allocations */

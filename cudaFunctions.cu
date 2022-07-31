@@ -71,7 +71,7 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
             }
             __syncthreads();
             // check if i am min
-                // if i do, update is match with row, col, obj id, is match
+                // if i do, update is match with row, col, obj id, pic id, is match
             if (s == bestMatchIdx)
             {
                 (*match).isMatch = 1;
@@ -93,16 +93,21 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
  */
 void cudaFuncs(Picture* picture, Obj* object, float* matchingValue, Match* match)
 {
-    int *dev_pic = 0;
-    int *dev_obj = 0;
+    int *dev_pic = 0; /* array of picture in device */
+    int *dev_obj = 0; /* array of object in device */
+
     cudaError_t status = cudaSuccess;
-    int numOfThreads, numOfBlocks;
+
+    int numOfThreads, numOfBlocks; /* numOfThreads - number of threads per block; numOfBlocks - number of blocks per grid */
+
     int pictureSize = picture->picSize;
     int objectSize = object->objSize;
     int objId = object->objId;
     int picId = picture->picId;
-    Match* dev_match = 0;
 
+    Match* dev_match = 0; /* match data type for device */
+
+    /* Calculate number of threads and blocks */
     if ((pictureSize * pictureSize) > MAX_THREADS_IN_BLOCK)
     {
         numOfThreads = MAX_THREADS_IN_BLOCK;
