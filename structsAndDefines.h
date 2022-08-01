@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define FILE_READ "/home/linuxu/ParallelComputationFinalProject/input __ NxN lines with 1 member.txt" // change input text, if needed
+#define FILE_READ "/home/linuxu/ParallelComputationFinalProject/input __ N lines with N members.txt" // change input text, if needed
 #define MASTER 0
 #define SLAVE 1
 

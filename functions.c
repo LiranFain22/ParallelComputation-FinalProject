@@ -1,10 +1,5 @@
 #include "functions.h"
 #include "mpi.h"
-#include <netdb.h>
-#include <ifaddrs.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
 
 /* This function reads data from input.txt */
 void parseFile(char* path, float* matchingValue, int* numOfPics, Picture** pictures, int* numOfObjs, Obj** objects)
@@ -279,6 +274,7 @@ void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* num
 
 	for(int i = 0; i < *numOfPics; i++)
 	{
+		/* resetting match for each pictute */
 		foundMatch = 0;
 		(*matches)[i].isMatch = 0;
 		(*matches)[i].picId = (*pictures)[i].picId;
@@ -287,6 +283,7 @@ void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* num
 			#pragma omp for private(myMatch)
 			for(int j = 0; j < *numOfObjs; j++)
 			{
+				/* For each index in picture execute calculation by CUDA for finding match */
 				myMatch.isMatch = 0;
 				if(foundMatch == 0)
 				{
@@ -294,7 +291,7 @@ void searchForMatch(Picture** pictures, Obj** objects, float* matching, int* num
 				}
 				else
 					continue;
-
+				/* Only one thread will update match for picture */
 				#pragma omp critical
 					if (foundMatch == 0 && myMatch.isMatch == 1)
 					{

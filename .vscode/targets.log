@@ -2,73 +2,42 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target 'all'.  Stop.
 
 # GNU Make 4.2.1
- 
 # Built for x86_64-pc-linux-gnu
- 
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
- 
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
- 
 # This is free software: you are free to change and redistribute it.
- 
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
- 
-# Make data base, printed on Sun Jul 31 11:03:43 2022
- 
+# Make data base, printed on Mon Aug  1 08:51:08 2022
 
 # Variables
- 
 
- 
 # 'override' directive
- 
 GNUMAKEFLAGS := 
- 
 # environment
- 
 PYSPARK_DRIVER_PYTHON_OPTS = notebook
- 
 # automatic
- 
 ?F = $(notdir $?)
- 
 # automatic
- 
 <D = $(patsubst %/,%,$(dir $<))
- 
 # environment
- 
 DESKTOP_SESSION = ubuntu
- 
 # environment
- 
 PYSPARK_DRIVER_PYTHON = jupyter
- 
 # default
- 
 .SHELLFLAGS := -c
- 
 # environment
- 
 XDG_SESSION_CLASS = user
- 
 # environment
- 
 SNAP_COMMON = /var/snap/code/common
- 
 # environment
- 
 XDG_SESSION_TYPE = x11
- 
 # automatic
- 
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
-XAUTHORITY = /var/run/gdm3/auth-for-linuxu-MYNEQ1/database
+XAUTHORITY = /var/run/gdm3/auth-for-linuxu-B8FFQ1/database
 # environment
 GDMSESSION = ubuntu
 # environment
@@ -84,7 +53,7 @@ VTE_VERSION = 6003
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:181156
+JOURNAL_STREAM = 8:109412
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -104,7 +73,7 @@ XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share:/usr/share:/var/lib/snapd/des
 # environment
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
-MANAGERPID = 22942
+MANAGERPID = 12554
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -118,7 +87,7 @@ PATH = /usr/local/cuda-11.0/bin:/home/linuxu/anaconda3/bin:/home/linuxu/anaconda
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/Paralpool4q2-6:@/tmp/.ICE-unix/23152,unix/Paralpool4q2-6:/tmp/.ICE-unix/23152
+SESSION_MANAGER = local/Paralpool4q2-5:@/tmp/.ICE-unix/12767,unix/Paralpool4q2-5:/tmp/.ICE-unix/12767
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -136,7 +105,7 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = 9fc7c54f12264cc9873da48858354a20
+INVOCATION_ID = bb0bcd6d973b4cf68752bc234d61affc
 # environment
 GDK_PIXBUF_MODULEDIR = /snap/code/102/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
@@ -160,7 +129,7 @@ PWD = /home/linuxu/ParallelComputationFinalProject
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 23122
+SSH_AGENT_PID = 12733
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -276,11 +245,11 @@ CONDA_PYTHON_EXE = /home/linuxu/anaconda3/bin/python
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/9fdd0387_a804_4860_90a6_05b580eb7877
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/491acf56_aa51_4438_9475_45ca8bc864de
 # automatic
 ^F = $(notdir $^)
 # environment
-GNOME_TERMINAL_SERVICE = :1.134
+GNOME_TERMINAL_SERVICE = :1.116
 # default
 SUFFIXES := 
 # environment
@@ -300,10 +269,11 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 27243
+VSCODE_PID = 17550
 # environment
 _CE_CONDA = 
 # variable set hash-table stats:
+ 
 # Load=130/1024=13%, Rehash=0, Collisions=16/155=10%
 
 # Pattern-specific Variable Values
@@ -312,7 +282,7 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 2053, inode 2101182): 27 files, no impossibilities.
+# . (device 2053, inode 3152905): 27 files, no impossibilities.
 
 # 27 files, no impossibilities in 1 directories.
 
@@ -332,7 +302,7 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-31 11:02:54.516129092
+#  Last modified 2022-08-01 08:50:17.752503319
 #  File has been updated.
 #  Successfully updated.
 
@@ -340,11 +310,8 @@ build:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 #  recipe to execute (from 'Makefile', line 2):
- 
 	mpicxx -fopenmp -g -c main.c -o main.o	
- 
 	nvcc -I./inc -c cudaFunctions.cu -o cudaFunctions.o
 	mpicxx -fopenmp -g -c functions.c -o functions.o
 	mpicxx -fopenmp -o mpiCudaOpemMP  main.o functions.o cudaFunctions.o /usr/local/cuda-11.0/lib64/libcudart_static.a -ldl -lrt
@@ -390,6 +357,6 @@ twoComputers:
 # strcache performance: lookups = 44 / hit rate = 18%
 # hash-table stats:
 # Load=36/8192=0%, Rehash=0, Collisions=1/44=2%
-# Finished Make data base on Sun Jul 31 11:03:43 2022
+# Finished Make data base on Mon Aug  1 08:51:08 2022
 
  

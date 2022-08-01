@@ -31,19 +31,22 @@ __device__ float calcDiff(float p, float o)
  */
 __global__ void findMatch(int* picture, int* object, float matchingValue, int picSize, int objSize, Match* match, int objectId, int picId)
 {
-    float result = 0.0;
+    float result = 0.0;            /* result calculation of calcDiff function */
 
-    int tx = threadIdx.x;
-    int bx = blockIdx.x;
-    int s = bx * blockDim.x + tx;
+    int tx = threadIdx.x;          /* thread index */
+    int bx = blockIdx.x;           /* block index */
+    int s = bx * blockDim.x + tx;  /* calculation for finding thread index */
+
     int foundMatch = 1;
-    __shared__ int bestMatchIdx;
+
+    __shared__ int bestMatchIdx;   /* shared memory of best match between matches */
+
     bestMatchIdx = -1;
 
     int row = s / picSize;
     int col = s - picSize * row;
 
-
+    /* check if the row and column do not exceed the borders of the image */
     if ((row + objSize) <= picSize && (col + objSize) <= picSize)
     {
             for(int i = 0; i < objSize; i++)
@@ -55,6 +58,7 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
                     
                     result += calcDiff(__int2float_rd(picture[picIdx]), __int2float_rd(object[objIdx]));
 
+                    /* if after calaculation the result is bigger than matching value -> no match, exit calculation */
                     if (result > matchingValue || match->isMatch==1)
                     {
                         foundMatch = 0;
@@ -64,13 +68,13 @@ __global__ void findMatch(int* picture, int* object, float matchingValue, int pi
                 if(foundMatch == 0) break;
             }
             __syncthreads();
-            //atomic min if foundMatch is 1
+            // atomic max if foundMatch is 1 give me the max thread index
             if (foundMatch == 1) 
             {
                 atomicMax(&bestMatchIdx, s);
             }
             __syncthreads();
-            // check if i am min
+            // check if i am max
                 // if i do, update is match with row, col, obj id, pic id, is match
             if (s == bestMatchIdx)
             {
